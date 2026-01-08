@@ -1,9 +1,4 @@
-import {
-  Document as MongooseDocument,
-  Schema,
-  CallbackWithoutResultAndOptionalError,
-  model,
-} from "mongoose";
+import mongoose, { Document as MongooseDocument, Schema } from "mongoose";
 
 export interface IEvent extends MongooseDocument {
   title: string;
@@ -128,8 +123,6 @@ EventSchema.pre("save", function (this: IEvent, next: any) {
   if (event.isModified("time")) {
     event.time = normalizeTime(event.time);
   }
-
-  next();
 });
 
 function generateSlug(title: string): string {
@@ -179,5 +172,6 @@ function normalizeTime(timeString: string): string {
   return `${hours.toString().padStart(2, "0")}:${minutes}`;
 }
 
-const Event = model<IEvent>("Event", EventSchema);
+// CORRETO
+const Event = mongoose.models.Event || mongoose.model("Event", EventSchema);
 export default Event;
